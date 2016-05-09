@@ -1,0 +1,12 @@
+##
+# {{ ansible_managed }}
+#
+
+# monitors cloud-init-output, this is unformatted so gets sent wholesale
+
+input(type="imfile"
+	File="/var/log/cloud-init-output.log"
+	Tag="cloud-init-logs"
+	addMetadata="on"
+	ruleset="remoteTextLog"
+)

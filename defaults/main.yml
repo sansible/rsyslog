@@ -1,0 +1,45 @@
+---
+
+rsyslog:
+  # replace this with the boxes application name (such as api_shopper)
+  app_name: default_app
+
+  # Built in log handlers
+  builtin_configs:
+    # generic handler for text based, unformatted log files
+    application_logs:
+      enabled: false
+      template:
+        src: "rsyslog.d/12-application-logs-shipping.conf.j2"
+        dest: "/etc/rsyslog.d/12-application-logs-shipping.conf"
+      logs: []
+        # an array of logs to monitor
+        # - path: "/home/application_user/*.log"
+
+    # handler for any logs formatted in json
+    json_logs:
+      enabled: false
+      template:
+        src: "rsyslog.d/13-json-logs-shipping.conf.j2"
+        dest: "/etc/rsyslog.d/13-json-logs-shipping.conf"
+      logs: []
+        # an array of json logs to monitor with settings
+        # - path: "/var/log/application_json/*.log"
+        #   options:
+        #     type_tag: "application_log"
+
+    # handles nginx access logs
+    nginx_access_logs:
+      enabled: false
+      template:
+        src: "rsyslog.d/11-nginx-access-logs-shipping.conf.j2"
+        dest: "/etc/rsyslog.d/11-nginx-access-logs-shipping.conf"
+      logs: []
+        # an array of logs to monitor
+        # - path: "/var/log/nginx/application_access.log"
+        
+  logstash:
+    host: logstash.elk.internal
+    inputs:
+      json:
+        port: 5001

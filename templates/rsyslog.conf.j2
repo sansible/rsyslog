@@ -1,0 +1,145 @@
+ ##
+# {{ ansible_managed }}
+#
+
+#################
+#### MODULES ####
+#################
+
+module(load="imfile" PollingInterval="10")
+module(load="imklog")
+module(load="imuxsock")
+
+###########################
+#### GLOBAL DIRECTIVES ####
+###########################
+
+$RepeatedMsgReduction off
+
+$WorkDirectory /var/spool/rsyslog
+
+#
+# Queue settings
+#
+$ActionQueueFileName mainqueue # unique name prefix for spool files
+$ActionQueueMaxDiskSpace 500M  # 1gb space limit (use as much as possible)
+$ActionQueueSaveOnShutdown on  # save messages to disk on shutdown
+$ActionQueueType LinkedList    # run asynchronously
+$ActionResumeRetryCount -1     # infinite retries if host is down
+
+#
+# Templates
+#
+
+# Template for shipping syslog rfc5424 messages sent directly to rsyslog
+template(name="syslogTemplate"
+   type="list") {
+   constant(value="{ ")
+   constant(value="\"type\":\"syslog\", ")
+   constant(value="\"host\":\"")
+   property(name="hostname")
+   constant(value="\", ")
+   constant(value="\"timestamp\":\"")
+   property(name="timestamp" dateFormat="rfc3339")
+   constant(value="\", ")
+   constant(value="\"@version\":\"2\", ")
+   constant(value="\"role\":\"{{ rsyslog.app_name }}\", ")
+   constant(value="\"message\":\"")
+   property(name="msg" format="json")
+   constant(value="\", ")
+   constant(value="\"priority\":\"")
+   property(name="syslogseverity")
+   constant(value="\", ")
+   constant(value="\"program\":\"")
+   property(name="programname")
+   constant(value="\", ")
+   constant(value="\"facility\":\"")
+   property(name="syslogfacility-text")
+   constant(value="\", ")
+   constant(value="\"severity\":\"")
+   property(name="syslogseverity-text")
+   constant(value="\"}\n")
+}
+
+# Template for non syslog messages, just sends the message wholesale with extra
+# furniture. Requires that the addMetadata option is set to one for imfile
+template(name="textLogTemplate"
+   type="list") {
+   constant(value="{ ")
+   constant(value="\"type\":\"")
+   property(name="programname")
+   constant(value="\", ")
+   constant(value="\"host\":\"")
+   property(name="hostname")
+   constant(value="\", ")
+   constant(value="\"timestamp\":\"")
+   property(name="timestamp" dateFormat="rfc3339")
+   constant(value="\", ")
+   constant(value="\"@version\":\"1\", ")
+   constant(value="\"role\":\"{{ rsyslog.app_name }}\", ")
+   constant(value="\"sourcefile\":\"")
+   property(name="$!metadata!filename")
+   constant(value="\", ")
+   constant(value="\"message\":\"")
+   property(name="rawmsg" format="json")
+   constant(value="\"}\n")
+}
+
+# Template for shipping JSON logs
+# Just adds some furniture to the json message
+template(name="jsonLogTemplate"
+   type="list") {
+   constant(value="{ ")
+   constant(value="\"type\":\"")
+   property(name="programname")
+   constant(value="\", ")
+   constant(value="\"host\":\"")
+   property(name="hostname")
+   constant(value="\", ")
+   constant(value="\"@version\":\"2\", ")
+   constant(value="\"role\":\"{{ rsyslog.app_name }}\", ")
+   constant(value="\"sourcefile\":\"")
+   property(name="$!metadata!filename")
+   constant(value="\", ")
+   property(name="msg" position.from="2")
+   constant(value="\n")
+}
+
+# Use standard RFC5424 log format for local logs
+$ActionFileDefaultTemplate RSYSLOG_SyslogProtocol23Format
+
+#
+# Rulesets
+#
+ruleset(name="remoteTextLog") {
+	# Don't log ELB healthchecks
+	:msg, contains, "ELB-HealthChecker" stop
+	:msg, contains, "healthcheck" stop
+	action(
+		type="omfwd"
+		Target="{{ rsyslog.logstash.host }}"
+		Port="{{ rsyslog.logstash.inputs.json.port }}"
+		Protocol="tcp"
+		RebindInterval="100"
+		template="textLogTemplate"
+	)
+	stop
+}
+
+ruleset(name="remoteJsonLog") {
+	# Don't log ELB healthchecks
+	:msg, contains, "ELB-HealthChecker" stop
+	:msg, contains, "healthcheck" stop
+	action(
+		type="omfwd"
+		Target="{{ rsyslog.logstash.host }}"
+		Port="{{ rsyslog.logstash.inputs.json.port }}"
+		Protocol="tcp"
+		RebindInterval="100"
+		template="jsonLogTemplate"
+	)
+	stop
+}
+
+# Include config files
+$IncludeConfig /etc/rsyslog.d/*.conf

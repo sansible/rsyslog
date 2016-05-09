@@ -1,0 +1,36 @@
+---
+
+- name: Add rsyslog v8 repo
+  become: yes
+  apt_repository:
+    repo: "ppa:adiscon/v8-stable"
+    state: present
+    update_cache: yes
+
+- name: Install rsyslog
+  become: yes
+  apt:
+    name: rsyslog
+    state: latest
+
+- name: Configure default rsyslog shipping configs
+  become: yes
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/{{ item }}"
+  with_items:
+    - rsyslog.conf
+    - rsyslog.d/10-cloud-init-logs-shipping.conf
+    - rsyslog.d/90-syslog-shipping.conf
+  notify:
+    - restart rsyslog
+
+- name: Configure builtin rsyslog shipping configs
+  become: yes
+  template:
+    src: "{{ item.value.template.src }}"
+    dest: "{{ item.value.template.dest }}"
+  when: item.value.enabled
+  with_dict: rsyslog.builtin_configs
+  notify:
+    - restart rsyslog

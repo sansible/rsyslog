@@ -1,0 +1,14 @@
+##
+# {{ ansible_managed }}
+#
+
+{% for log_settings in item.value.logs %}
+
+input(type="imfile"
+	File="{{ log_settings.path }}"
+	Tag="nginx-access-logs"
+	addMetadata="on"
+	ruleset="remoteJsonLog"
+)
+
+{% endfor %}

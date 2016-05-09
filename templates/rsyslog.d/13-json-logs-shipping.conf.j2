@@ -1,0 +1,17 @@
+##
+# {{ ansible_managed }}
+#
+
+# monitors unformatted application logs, they will get sent wholesale to
+# logstash with some extra bits of furniture (server role, host etc.)
+
+{% for log_settings in item.value.logs %}
+
+input(type="imfile"
+	File="{{ log_settings.path }}"
+	Tag="{{ log_settings.options.type_tag }}"
+	addMetadata="on"
+	ruleset="remoteJsonLog"
+)
+
+{% endfor %}

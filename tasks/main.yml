@@ -1,0 +1,6 @@
+---
+
+- name: Install rsyslog
+  include: install.yml
+  tags:
+    - build
