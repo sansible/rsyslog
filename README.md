@@ -4,6 +4,7 @@ Master: [![Build Status](https://travis-ci.org/sansible/rsyslog.svg?branch=maste
 Develop: [![Build Status](https://travis-ci.org/sansible/rsyslog.svg?branch=develop)](https://travis-ci.org/sansible/rsyslog)
 
 * [ansible.cfg](#ansible-cfg)
+* [Installation and Dependencies](#installation-and-dependencies)
 * [Tags](#tags)
 * [Examples](#examples)
 
@@ -23,6 +24,21 @@ ansible.cfg contains these settings
 [defaults]
 hash_behaviour = merge
 ```
+
+
+
+
+## Installation and Dependencies
+
+To install run `ansible-galaxy install sansible.rsyslog` or add this to your
+`roles.yml`
+
+```YAML
+- name: sansible.rsyslog
+  version: v1.0
+```
+
+and run `ansible-galaxy install -p ./roles -r roles.yml`
 
 
 
@@ -65,4 +81,17 @@ To install:
             enabled: true
             logs:
               - path: "/var/log/nginx/application_access.log"
+```
+
+To install without default config:
+
+```YAML
+- name: Some app
+  hosts: "{{ hosts }}"
+
+  roles:
+    - role: sansible.rsyslog
+      rsyslog:
+        app_name: default_app
+        default_config: no
 ```
