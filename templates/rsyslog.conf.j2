@@ -118,7 +118,7 @@ ruleset(name="remoteTextLog") {
 	action(
 		type="omfwd"
 		Target="{{ rsyslog.logstash.host }}"
-		Port="{{ rsyslog.logstash.inputs.json.port }}"
+		Port="{{ rsyslog.logstash.port }}"
 		Protocol="tcp"
 		RebindInterval="100"
 		template="textLogTemplate"
@@ -133,7 +133,7 @@ ruleset(name="remoteJsonLog") {
 	action(
 		type="omfwd"
 		Target="{{ rsyslog.logstash.host }}"
-		Port="{{ rsyslog.logstash.inputs.json.port }}"
+		Port="{{ rsyslog.logstash.port }}"
 		Protocol="tcp"
 		RebindInterval="100"
 		template="jsonLogTemplate"

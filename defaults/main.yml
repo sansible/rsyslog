@@ -3,6 +3,9 @@
 rsyslog:
   # replace this with the boxes application name (such as api_shopper)
   app_name: default_app
+  # If set to no you will need to write all config files
+  # in an extending role
+  default_config: yes
 
   # Built in log handlers
   builtin_configs:
@@ -40,6 +43,4 @@ rsyslog:
         
   logstash:
     host: logstash.elk.internal
-    inputs:
-      json:
-        port: 5001
+    port: 5001
