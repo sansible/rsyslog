@@ -22,6 +22,7 @@
     - rsyslog.conf
     - rsyslog.d/10-cloud-init-logs-shipping.conf
     - rsyslog.d/90-syslog-shipping.conf
+  when: rsyslog.default_config
   notify:
     - restart rsyslog
 
