@@ -6,7 +6,8 @@ rsyslog:
   # If set to no you will need to write all config files
   # in an extending role
   default_config: yes
-
+  max_message_size: 64k
+  
   # Built in log handlers
   builtin_configs:
     # generic handler for text based, unformatted log files
