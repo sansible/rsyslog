@@ -7,11 +7,14 @@
     state: present
     update_cache: yes
 
-- name: Install rsyslog
+- name: Install rsyslog and supporting packages
   become: yes
   apt:
-    name: rsyslog
+    name: "{{ item }}"
     state: latest
+  with_items:
+    - rsyslog
+    - rsyslog-mmjsonparse
 
 - name: Configure default rsyslog shipping configs
   become: yes

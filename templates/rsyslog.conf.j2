@@ -2,6 +2,9 @@
 # {{ ansible_managed }}
 #
 
+# This must come before any network modules
+$MaxMessageSize {{ rsyslog.max_message_size }}
+
 #################
 #### MODULES ####
 #################
@@ -9,6 +12,7 @@
 module(load="imfile" PollingInterval="10")
 module(load="imklog")
 module(load="imuxsock")
+module(load="mmjsonparse")
 
 ###########################
 #### GLOBAL DIRECTIVES ####
@@ -101,8 +105,7 @@ template(name="jsonLogTemplate"
    constant(value="\"sourcefile\":\"")
    property(name="$!metadata!filename")
    constant(value="\", ")
-   property(name="msg" position.from="2")
-   constant(value="\n")
+   property(name="$!all-json" position.from="2")
 }
 
 # Use standard RFC5424 log format for local logs
@@ -130,6 +133,7 @@ ruleset(name="remoteJsonLog") {
 	# Don't log ELB healthchecks
 	:msg, contains, "ELB-HealthChecker" stop
 	:msg, contains, "healthcheck" stop
+	action(type="mmjsonparse" cookie="")
 	action(
 		type="omfwd"
 		Target="{{ rsyslog.logstash.host }}"
