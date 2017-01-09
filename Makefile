@@ -1,43 +1,53 @@
+ANSIBLE_CONFIG ?= tests/ansible.cfg
 
-BRANCH?=$(shell git rev-parse --abbrev-ref HEAD)
+.DEFAULT_GOAL := help
+.PHONY: help
 
-all: test clean
+export ANSIBLE_CONFIG
 
+all: test vagrant_halt clean
+
+## Run tests on any file change
 watch: test_deps
 	while sleep 1; do \
-		find defaults/ handlers/ meta/ tasks/ templates/ tests/vagrant/test.yml \
-		| entr -d make lint vagrant_up; \
+		find defaults/ meta/ tasks/ templates/ tests/test.yml tests/vagrant/Vagrantfile \
+		| entr -d make lint vagrant; \
 	done
 
-test: lint test_deps vagrant_up
+## Run tests
+test: test_deps lint vagrant
 
-integration_test: clean integration_test_deps vagrant_up clean
-
+## Install test dependencies
 test_deps:
-	rm -rf tests/vagrant/sansible.*
-	ln -s ../.. tests/vagrant/sansible.rsyslog
+	rm -rf tests/sansible.*
+	ln -s .. tests/sansible.rsyslog
 
-integration_test_deps:
-	echo "noop"
+## Start and (re)provisiom Vagrant test box
+vagrant:
+	cd tests/vagrant && vagrant up --no-provision
+	cd tests/vagrant && vagrant provision
 
-vagrant_up:
-	@cd tests/vagrant; \
-	if (vagrant status | grep -E "(running|saved|poweroff)" 1>/dev/null) then \
-		vagrant up || exit 1; \
-		vagrant provision || exit 1; \
-	else \
-		vagrant up || exit 1; \
-	fi;
+## Execute simple Vagrant command
+# Example: make vagrant_ssh
+#          make vagrant_halt
+vagrant_%:
+	cd tests/vagrant && vagrant $(subst vagrant_,,$@)
 
-vagrant_ssh:
-	@cd tests/vagrant; \
-	vagrant up || exit 1; \
-	vagrant ssh
+## Lint role
+# You need to install ansible-lint
+lint:
+	find defaults/ meta/ tasks/ templates/ -name "*.yml" | xargs -I{} ansible-lint {}
 
+## Clean up
 clean:
-	rm -rf tests/vagrant/sansible.*
+	rm -rf tests/sansible.*
 	cd tests/vagrant && vagrant destroy
 
-lint:
-	# find handlers/ meta/ tasks/ -name "*.yml" -type f | xargs grep -E "({{[^ ]|[^ ]}})"
-	echo "To fix"
+## Prints this help
+help:
+	@awk -v skip=1 \
+		'/^##/ { sub(/^[#[:blank:]]*/, "", $$0); doc_h=$$0; doc=""; skip=0; next } \
+		 skip  { next } \
+		 /^#/  { doc=doc "\n" substr($$0, 2); next } \
+		 /:/   { sub(/:.*/, "", $$0); printf "\033[34m%-30s\033[0m\033[1m%s\033[0m %s\n\n", $$0, doc_h, doc; skip=1 }' \
+		$(MAKEFILE_LIST)

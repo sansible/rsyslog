@@ -1,6 +1,6 @@
 # Rsyslog
 
-Master: [![Build Status](https://travis-ci.org/sansible/rsyslog.svg?branch=master)](https://travis-ci.org/sansible/rsyslog)  
+Master: [![Build Status](https://travis-ci.org/sansible/rsyslog.svg?branch=master)](https://travis-ci.org/sansible/rsyslog)
 Develop: [![Build Status](https://travis-ci.org/sansible/rsyslog.svg?branch=develop)](https://travis-ci.org/sansible/rsyslog)
 
 * [ansible.cfg](#ansible-cfg)
@@ -35,7 +35,7 @@ To install run `ansible-galaxy install sansible.rsyslog` or add this to your
 
 ```YAML
 - name: sansible.rsyslog
-  version: v1.0
+  version: v1.1
 ```
 
 and run `ansible-galaxy install -p ./roles -r roles.yml`

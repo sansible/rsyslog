@@ -7,7 +7,8 @@ rsyslog:
   # in an extending role
   default_config: yes
   max_message_size: 64k
-  
+  version: "8.23.*"
+
   # Built in log handlers
   builtin_configs:
     # generic handler for text based, unformatted log files
@@ -41,7 +42,7 @@ rsyslog:
       logs: []
         # an array of logs to monitor
         # - path: "/var/log/nginx/application_access.log"
-        
+
   logstash:
     host: logstash.elk.internal
     port: 5001
