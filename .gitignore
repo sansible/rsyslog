@@ -1,4 +1,5 @@
-/meta/.galaxy_install_info
 .vagrant
-/tests/vagrant/sansible.*
+/tests/sansible.*
+/meta/.galaxy_install_info
 *.bak
+*.retry
