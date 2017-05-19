@@ -7,6 +7,15 @@
     state: present
     update_cache: yes
 
+- name: Purge old rsyslog config files leftover from upgrades
+  become: yes
+  file:
+    path: "/etc/rsyslog.d/{{ item }}"
+    state: absent
+  with_items: "{{ rsyslog.config_files_to_purge }}"
+  notify:
+    - restart rsyslog
+
 - name: Install rsyslog and supporting packages
   become: yes
   apt:
@@ -38,11 +47,3 @@
   notify:
     - restart rsyslog
 
-- name: Purge old rsyslog config files leftover from upgrades
-  become: yes
-  file:
-    path: "/etc/rsyslog.d/{{ item }}"
-    state: absent
-  with_items: "{{ rsyslog.config_files_to_purge }}"
-  notify:
-    - restart rsyslog
