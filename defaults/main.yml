@@ -3,6 +3,11 @@
 rsyslog:
   # replace this with the boxes application name (such as api_shopper)
   app_name: default_app
+  # These are known old config files that can hang around when upgrading
+  # these can break newer versions of Rsyslog
+  config_files_to_purge:
+    - 20-ufw.conf
+    - 21-cloudinit.conf
   # If set to no you will need to write all config files
   # in an extending role
   default_config: yes
