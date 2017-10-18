@@ -21,8 +21,9 @@
   apt:
     name: "{{ item }}"
   with_items:
+    - "libfastjson4={{ rsyslog.version_libfastjson4 }}"
     - "rsyslog={{ rsyslog.version }}"
-    - rsyslog-mmjsonparse
+    - "rsyslog-mmjsonparse={{ rsyslog.version_mmjsonparse }}"
 
 - name: Configure default rsyslog shipping configs
   become: yes
@@ -46,4 +47,3 @@
   with_dict: "{{ rsyslog.builtin_configs }}"
   notify:
     - restart rsyslog
-

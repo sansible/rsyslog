@@ -13,6 +13,8 @@ rsyslog:
   default_config: yes
   max_message_size: 64k
   version: "8.*"
+  version_libfastjson4: "0.*"
+  version_mmjsonparse: "8.*"
 
   # Built in log handlers
   builtin_configs:

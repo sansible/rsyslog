@@ -95,3 +95,17 @@ To install without default config:
         app_name: default_app
         default_config: no
 ```
+
+To install specific package versions:
+
+```YAML
+- name: Some app
+  hosts: "{{ hosts }}"
+
+  roles:
+    - role: sansible.rsyslog
+      rsyslog:
+        version: "8.30*"
+        version_libfastjson4: "0.99.*"
+        version_mmjsonparse: "8.30.*"
+```
