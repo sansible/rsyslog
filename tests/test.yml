@@ -20,3 +20,13 @@
       command: rsyslogd -v
       tags:
         - assert
+
+    - name: Rsyslog should already be started
+      become: yes
+      service:
+        name: rsyslog
+        state: started
+      register: start_check
+      failed_when: start_check.changed
+      tags:
+        - assert
