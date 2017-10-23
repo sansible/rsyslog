@@ -9,7 +9,7 @@
 
 input(type="imfile"
 	File="{{ log_settings.path }}"
-	Tag="application-logs"
+	Tag="{{ log_settings.options.type_tag if ( log_settings.options is defined and log_settings.options.type_tag is defined) else 'application-logs' }}"
 	addMetadata="on"
 	ruleset="remoteTextLog"
 )

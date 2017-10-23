@@ -25,8 +25,11 @@ rsyslog:
         src: "rsyslog.d/12-application-logs-shipping.conf.j2"
         dest: "/etc/rsyslog.d/12-application-logs-shipping.conf"
       logs: []
-        # an array of logs to monitor
+        # an array of logs to monitor, type is optional and defaults to
+        # application_log
         # - path: "/home/application_user/*.log"
+        #   options:
+        #     type_tag: "application_log"
 
     # handler for any logs formatted in json
     json_logs:
