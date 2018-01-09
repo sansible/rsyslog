@@ -14,6 +14,24 @@
 
   roles:
     - role: sansible.rsyslog
+      rsyslog:
+        builtin_configs:
+          application_logs:
+            enabled: true
+            logs:
+              - path: "/var/log/some_log.log"
+          auth_logs:
+            enabled: true
+          json_logs:
+            enabled: true
+            logs:
+              - path: "/var/log/some_json_log.log"
+                options:
+                  type_tag: "application-logs-some-app"
+          nginx_access_logs:
+            enabled: true
+            logs:
+              - path: "/var/log/some_nginx_log.log"
 
   post_tasks:
     - name: Rsyslog should be installed

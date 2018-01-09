@@ -2,13 +2,12 @@
 # {{ ansible_managed }}
 #
 
-# Transport system and kernal (syslog) messages to logstash
-*.*;auth,authpriv.none action(
+# Transport auth messages to logstash
+auth,authpriv.* action(
 	type="omfwd"
 	Target="{{ rsyslog.logstash.host }}"
 	Port="{{ rsyslog.logstash.port }}"
 	Protocol="tcp"
 	RebindInterval="100"
-	template="syslogTemplate"
+	template="authlogTemplate"
 )
-stop

@@ -65,6 +65,36 @@ template(name="syslogTemplate"
    constant(value="\"}\n")
 }
 
+# Template for shipping auth rfc5424 messages sent directly to rsyslog
+template(name="authlogTemplate"
+   type="list") {
+   constant(value="{ ")
+   constant(value="\"type\":\"authlog\", ")
+   constant(value="\"host\":\"")
+   property(name="hostname")
+   constant(value="\", ")
+   constant(value="\"timestamp\":\"")
+   property(name="timestamp" dateFormat="rfc3339")
+   constant(value="\", ")
+   constant(value="\"@version\":\"2\", ")
+   constant(value="\"role\":\"{{ rsyslog.app_name }}\", ")
+   constant(value="\"message\":\"")
+   property(name="msg" format="json")
+   constant(value="\", ")
+   constant(value="\"priority\":\"")
+   property(name="syslogseverity")
+   constant(value="\", ")
+   constant(value="\"program\":\"")
+   property(name="programname")
+   constant(value="\", ")
+   constant(value="\"facility\":\"")
+   property(name="syslogfacility-text")
+   constant(value="\", ")
+   constant(value="\"severity\":\"")
+   property(name="syslogseverity-text")
+   constant(value="\"}\n")
+}
+
 # Template for non syslog messages, just sends the message wholesale with extra
 # furniture. Requires that the addMetadata option is set to one for imfile
 template(name="textLogTemplate"

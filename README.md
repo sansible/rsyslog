@@ -92,6 +92,34 @@ Syslog messages are shipped in the following format:
 }
 ```
 
+### Auth log files
+
+```YAML
+rsyslog:
+  app_name: some_application
+  builtin_configs:
+    auth_logs:
+      enabled: true
+```
+
+Ships auth and authpriv facility messages, uses the same template as Syslog
+messages with the type field set to authlog:
+
+```JSON
+{
+  "type": "authlog",
+  "host": "192.168.1.1",
+  "timestamp": "2018-01-09T10:45:01.117615+00:00",
+  "@version": "2",
+  "role": "some_application",
+  "message": " pam_unix(cron:session): session closed for user some_user",
+  "priority": "6",
+  "program": "CRON",
+  "facility": "authpriv",
+  "severity": "info"
+}
+```
+
 ### Plain text log files
 
 ```YAML
