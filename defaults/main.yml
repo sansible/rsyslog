@@ -31,6 +31,12 @@ rsyslog:
         #   options:
         #     type_tag: "application_log"
 
+    auth_logs:
+      enabled: false
+      template:
+        src: "rsyslog.d/14-auth-logs-shipping.conf.j2"
+        dest: "/etc/rsyslog.d/14-auth-logs-shipping.conf"
+
     # handler for any logs formatted in json
     json_logs:
       enabled: false
