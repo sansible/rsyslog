@@ -37,6 +37,18 @@ rsyslog:
         src: "rsyslog.d/14-auth-logs-shipping.conf.j2"
         dest: "/etc/rsyslog.d/14-auth-logs-shipping.conf"
 
+    docker_application_logs:
+      enabled: false
+      template:
+        src: "rsyslog.d/15-docker-text-logs-shipping.conf.j2"
+        dest: "/etc/rsyslog.d/15-docker-text-logs-shipping.conf.j2"
+
+    docker_json_logs:
+      enabled: false
+      template:
+        src: "rsyslog.d/16-docker-json-logs.shipping.conf.j2"
+        dest: "/etc/rsyslog.d/16-docker-json-logs.shipping.conf.j2"
+
     # handler for any logs formatted in json
     json_logs:
       enabled: false

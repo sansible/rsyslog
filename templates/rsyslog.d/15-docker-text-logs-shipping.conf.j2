@@ -1,0 +1,51 @@
+##
+# {{ ansible_managed }}
+#
+
+# accepts unformatted application logs, they will get sent wholesale to
+# logstash with some extra bits of furniture (server role, host etc.)
+
+
+input(type="imuxsock"
+	Socket="/var/run/rsyslog/text.sock"
+	CreatePath="on"
+	ruleset="remoteDockerTextLog"
+)
+
+ruleset(name="remoteDockerTextLog") {
+	# Don't log ELB healthchecks
+	:msg, contains, "ELB-HealthChecker" stop
+	:msg, contains, "healthcheck" stop
+	action(
+		type="omfwd"
+		Target="{{ rsyslog.logstash.host }}"
+		Port="{{ rsyslog.logstash.port }}"
+		Protocol="tcp"
+		RebindInterval="100"
+		template="textDockerLogTemplate"
+	)
+	stop
+}
+
+# Template for non syslog messages via docker, just sends the message wholesale with extra
+# furniture. Intended as a receiver via imuxsock from the Docker syslog log driver.
+template(name="textDockerLogTemplate"
+	type="list") {
+	constant(value="{ ")
+	constant(value="\"type\":\"")
+	property(name="programname")
+	constant(value="\", ")
+	constant(value="\"host\":\"")
+	property(name="hostname")
+	constant(value="\", ")
+	constant(value="\"timestamp\":\"")
+	property(name="timestamp" dateFormat="rfc3339")
+	constant(value="\", ")
+	constant(value="\"@version\":\"1\", ")
+	constant(value="\"role\":\"")
+	property(name="programname")
+	constant(value="\", ")
+	constant(value="\"message\":\"")
+	property(name="msg" format="json" position.from="2")
+	constant(value="\"}\n")
+}

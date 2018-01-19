@@ -1,0 +1,47 @@
+##
+# {{ ansible_managed }}
+#
+
+# accepts json formatted application logs, they will get sent wholesale to
+# logstash with some extra bits of furniture (server role, host etc.)
+
+
+input(type="imuxsock"
+	Socket="/var/run/rsyslog/json.sock"
+	CreatePath="on"
+	ruleset="remoteDockerJsonLog"
+)
+
+ruleset(name="remoteDockerJsonLog") {
+	# Don't log ELB healthchecks
+	:msg, contains, "ELB-HealthChecker" stop
+	:msg, contains, "healthcheck" stop
+	action(type="mmjsonparse" cookie="")
+	action(
+		type="omfwd"
+		Target="{{ rsyslog.logstash.host }}"
+		Port="{{ rsyslog.logstash.port }}"
+		Protocol="tcp"
+		RebindInterval="100"
+		template="jsonDockerLogTemplate"
+	)
+	stop
+}
+
+# Template for shipping JSON logs from Docker
+# Just adds some furniture to the json message
+template(name="jsonDockerLogTemplate"
+	type="list") {
+	constant(value="{ ")
+	constant(value="\"type\":\"")
+	property(name="programname")
+	constant(value="\", ")
+	constant(value="\"host\":\"")
+	property(name="hostname")
+	constant(value="\", ")
+	constant(value="\"@version\":\"2\", ")
+	constant(value="\"role\":\"")
+	property(name="programname")
+	constant(value="\", ")
+	property(name="msg" position.from="2")
+}
