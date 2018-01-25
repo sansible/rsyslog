@@ -12,22 +12,6 @@ input(type="imuxsock"
 	ruleset="remoteDockerJsonLog"
 )
 
-ruleset(name="remoteDockerJsonLog") {
-	# Don't log ELB healthchecks
-	:msg, contains, "ELB-HealthChecker" stop
-	:msg, contains, "healthcheck" stop
-	action(type="mmjsonparse" cookie="")
-	action(
-		type="omfwd"
-		Target="{{ rsyslog.logstash.host }}"
-		Port="{{ rsyslog.logstash.port }}"
-		Protocol="tcp"
-		RebindInterval="100"
-		template="jsonDockerLogTemplate"
-	)
-	stop
-}
-
 # Template for shipping JSON logs from Docker
 # Just adds some furniture to the json message
 template(name="jsonDockerLogTemplate"
@@ -44,4 +28,20 @@ template(name="jsonDockerLogTemplate"
 	property(name="programname")
 	constant(value="\", ")
 	property(name="msg" position.from="2")
+}
+
+ruleset(name="remoteDockerJsonLog") {
+	# Don't log ELB healthchecks
+	:msg, contains, "ELB-HealthChecker" stop
+	:msg, contains, "healthcheck" stop
+	action(type="mmjsonparse" cookie="")
+	action(
+		type="omfwd"
+		Target="{{ rsyslog.logstash.host }}"
+		Port="{{ rsyslog.logstash.port }}"
+		Protocol="tcp"
+		RebindInterval="100"
+		template="jsonDockerLogTemplate"
+	)
+	stop
 }

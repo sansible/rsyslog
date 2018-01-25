@@ -12,21 +12,6 @@ input(type="imuxsock"
 	ruleset="remoteDockerTextLog"
 )
 
-ruleset(name="remoteDockerTextLog") {
-	# Don't log ELB healthchecks
-	:msg, contains, "ELB-HealthChecker" stop
-	:msg, contains, "healthcheck" stop
-	action(
-		type="omfwd"
-		Target="{{ rsyslog.logstash.host }}"
-		Port="{{ rsyslog.logstash.port }}"
-		Protocol="tcp"
-		RebindInterval="100"
-		template="textDockerLogTemplate"
-	)
-	stop
-}
-
 # Template for non syslog messages via docker, just sends the message wholesale with extra
 # furniture. Intended as a receiver via imuxsock from the Docker syslog log driver.
 template(name="textDockerLogTemplate"
@@ -48,4 +33,19 @@ template(name="textDockerLogTemplate"
 	constant(value="\"message\":\"")
 	property(name="msg" format="json" position.from="2")
 	constant(value="\"}\n")
+}
+
+ruleset(name="remoteDockerTextLog") {
+	# Don't log ELB healthchecks
+	:msg, contains, "ELB-HealthChecker" stop
+	:msg, contains, "healthcheck" stop
+	action(
+		type="omfwd"
+		Target="{{ rsyslog.logstash.host }}"
+		Port="{{ rsyslog.logstash.port }}"
+		Protocol="tcp"
+		RebindInterval="100"
+		template="textDockerLogTemplate"
+	)
+	stop
 }
