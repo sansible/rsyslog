@@ -1,76 +1,48 @@
 ---
 
-rsyslog:
-  # replace this with the boxes application name (such as api_shopper)
-  app_name: default_app
-  # These are known old config files that can hang around when upgrading
-  # these can break newer versions of Rsyslog
-  config_files_to_purge:
-    - 20-ufw.conf
-    - 21-cloudinit.conf
-  # If set to no you will need to write all config files
-  # in an extending role
-  default_config: yes
-  max_message_size: 64k
-  version: "8.*"
-  version_libfastjson4: "0.*"
-  version_mmjsonparse: "8.*"
+sansible_rsyslog_app_name: default_app
 
-  # Built in log handlers
-  builtin_configs:
-    # generic handler for text based, unformatted log files
-    application_logs:
-      enabled: false
-      template:
-        src: "rsyslog.d/12-application-logs-shipping.conf.j2"
-        dest: "/etc/rsyslog.d/12-application-logs-shipping.conf"
-      logs: []
-        # an array of logs to monitor, type is optional and defaults to
-        # application_log
-        # - path: "/home/application_user/*.log"
-        #   options:
-        #     type_tag: "application_log"
+sansible_rsyslog_builtin_configs_application_logs_enabled: no
+sansible_rsyslog_builtin_configs_application_logs_template:
+  src: rsyslog.d/12-application-logs-shipping.conf.j2
+  dest: /etc/rsyslog.d/12-application-logs-shipping.conf
+sansible_rsyslog_builtin_configs_application_logs_logs: []
 
-    auth_logs:
-      enabled: false
-      template:
-        src: "rsyslog.d/14-auth-logs-shipping.conf.j2"
-        dest: "/etc/rsyslog.d/14-auth-logs-shipping.conf"
+sansible_rsyslog_builtin_configs_auth_logs_enabled: no
+sansible_rsyslog_builtin_configs_auth_logs_template:
+  src: rsyslog.d/14-auth-logs-shipping.conf.j2
+  dest: /etc/rsyslog.d/14-auth-logs-shipping.conf
 
-    docker_application_logs:
-      enabled: false
-      template:
-        src: "rsyslog.d/15-docker-text-logs-shipping.conf.j2"
-        dest: "/etc/rsyslog.d/15-docker-text-logs-shipping.conf"
+sansible_rsyslog_builtin_configs_docker_application_logs_enabled: no
+sansible_rsyslog_builtin_configs_docker_application_logs_template:
+  src: rsyslog.d/15-docker-text-logs-shipping.conf.j2
+  dest: /etc/rsyslog.d/15-docker-text-logs-shipping.conf
 
-    docker_json_logs:
-      enabled: false
-      template:
-        src: "rsyslog.d/16-docker-json-logs.shipping.conf.j2"
-        dest: "/etc/rsyslog.d/16-docker-json-logs.shipping.conf"
+sansible_rsyslog_builtin_configs_docker_json_logs_enabled: no
+sansible_rsyslog_builtin_configs_docker_json_logs_template:
+  src: rsyslog.d/16-docker-json-logs.shipping.conf.j2
+  dest: /etc/rsyslog.d/16-docker-json-logs.shipping.conf
 
-    # handler for any logs formatted in json
-    json_logs:
-      enabled: false
-      template:
-        src: "rsyslog.d/13-json-logs-shipping.conf.j2"
-        dest: "/etc/rsyslog.d/13-json-logs-shipping.conf"
-      logs: []
-        # an array of json logs to monitor with settings
-        # - path: "/var/log/application_json/*.log"
-        #   options:
-        #     type_tag: "application_log"
+sansible_rsyslog_builtin_configs_json_logs_enabled: no
+sansible_rsyslog_builtin_configs_json_logs_template:
+  src: rsyslog.d/13-json-logs-shipping.conf.j2
+  dest: /etc/rsyslog.d/13-json-logs-shipping.conf
+sansible_rsyslog_builtin_configs_json_logs_logs: []
 
-    # handles nginx access logs
-    nginx_access_logs:
-      enabled: false
-      template:
-        src: "rsyslog.d/11-nginx-access-logs-shipping.conf.j2"
-        dest: "/etc/rsyslog.d/11-nginx-access-logs-shipping.conf"
-      logs: []
-        # an array of logs to monitor
-        # - path: "/var/log/nginx/application_access.log"
+sansible_rsyslog_builtin_configs_nginx_access_logs_enabled: no
+sansible_rsyslog_builtin_configs_nginx_access_logs_template:
+  src: rsyslog.d/11-nginx-access-logs-shipping.conf.j2
+  dest: /etc/rsyslog.d/11-nginx-access-logs-shipping.conf
+sansible_rsyslog_builtin_configs_nginx_access_logs_logs: []
 
-  logstash:
-    host: logstash.elk.internal
-    port: 5001
+sansible_rsyslog_config_files_to_purge:
+  - 20-ufw.conf
+  - 21-cloudinit.conf
+
+sansible_rsyslog_default_config: yes
+sansible_rsyslog_logstash_host: logstash.elk.internal
+sansible_rsyslog_logstash_port: 5001
+sansible_rsyslog_max_message_size: 64k
+sansible_rsyslog_version: "8.*"
+sansible_rsyslog_version_libfastjson4: "0.*"
+sansible_rsyslog_version_mmjsonparse: "8.*"

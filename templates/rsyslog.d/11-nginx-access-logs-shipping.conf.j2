@@ -2,7 +2,7 @@
 # {{ ansible_managed }}
 #
 
-{% for log_settings in item.value.logs %}
+{% for log_settings in sansible_rsyslog_builtin_configs_nginx_access_logs_logs %}
 
 input(type="imfile"
 	File="{{ log_settings.path }}"

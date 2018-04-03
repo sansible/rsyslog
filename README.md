@@ -3,29 +3,22 @@
 Master: [![Build Status](https://travis-ci.org/sansible/rsyslog.svg?branch=master)](https://travis-ci.org/sansible/rsyslog)
 Develop: [![Build Status](https://travis-ci.org/sansible/rsyslog.svg?branch=develop)](https://travis-ci.org/sansible/rsyslog)
 
-* [ansible.cfg](#ansible-cfg)
 * [Installation and Dependencies](#installation-and-dependencies)
 * [Tags](#tags)
+* [Builtin log configs](#builtin-log-configs)
+  * [Syslog files](#syslog-files)
+  * [Auth log files](#auth-log-files)
+  * [Plain text log files](#plain-text-log-files)
+  * [JSON log files](#json-log-files)
+  * [Nginx access log files](#nginx-access-log-files)
+  * [Docker container logs](#docker-container-logs)
+    * [Plain text logs](#plain-text-logs)
+    * [JSON logs](#json-logs)
 * [Examples](#examples)
 
 This roles installs rsyslog v8 for the log shipping.
 
 For more information on rsyslog please visit [rsyslog docs](http://www.rsyslog.com/doc/v8-stable/).
-
-
-
-
-## ansible.cfg
-
-This role is designed to work with merge "hash_behaviour". Make sure your
-ansible.cfg contains these settings
-
-```INI
-[defaults]
-hash_behaviour = merge
-```
-
-
 
 
 ## Installation and Dependencies
@@ -35,21 +28,17 @@ To install run `ansible-galaxy install sansible.rsyslog` or add this to your
 
 ```YAML
 - name: sansible.rsyslog
-  version: v1.1
+  version: v2.0
 ```
 
 and run `ansible-galaxy install -p ./roles -r roles.yml`
-
-
 
 
 ## Tags
 
 This role uses two tags: **build** and **configure**
 
-* `build` - Installs Rsyslog all it's dependencies.
-
-
+* `build` - Installs Rsyslog all its dependencies.
 
 
 ## Builtin log configs
@@ -95,11 +84,8 @@ Syslog messages are shipped in the following format:
 ### Auth log files
 
 ```YAML
-rsyslog:
-  app_name: some_application
-  builtin_configs:
-    auth_logs:
-      enabled: true
+sansible_rsyslog_app_name: some_application
+sansible_rsyslog_builtin_configs_application_logs_enabled: true
 ```
 
 Ships auth and authpriv facility messages, uses the same template as Syslog
@@ -123,16 +109,13 @@ messages with the type field set to authlog:
 ### Plain text log files
 
 ```YAML
-rsyslog:
-  app_name: some_application
-  builtin_configs:
-    application_logs:
-      enabled: true
-      logs:
-        - path: "/var/log/some_log.log"
-          # type defaults to application_log if not specified
-          options:
-            type: some_application_log
+sansible_rsyslog_app_name: some_application
+sansible_rsyslog_builtin_configs_application_logs_enabled: true
+sansible_rsyslog_builtin_configs_application_logs_logs:
+  - path: "/var/log/some_log.log"
+    # type defaults to application_log if not specified
+    options:
+      type: some_application_log
 ```
 
 The application_logs builtin is designed to handle log files that are in
@@ -164,15 +147,12 @@ For example:
 ### JSON log files
 
 ```YAML
-rsyslog:
-  app_name: some_application
-  builtin_configs:
-    json_logs:
-      enabled: true
-      logs:
-        - path: "/var/log/some_log.log"
-          options:
-            type: some_application_log
+sansible_rsyslog_app_name: some_application
+sansible_rsyslog_builtin_configs_json_logs_enabled: true
+sansible_rsyslog_builtin_configs_json_logs_logs:
+  - path: "/var/log/some_log.log"
+    options:
+      type: some_application_log
 ```
 
 The json_logs builtin is designed to handle log files that are in JSON,
@@ -241,10 +221,7 @@ The configuration creates unix socket files on the host to which docker forwards
 
 #### Plain text logs
 ```YAML
-rsyslog:
-  builtin_configs:
-    docker_application_logs:
-      enabled: true
+sansible_rsyslog_builtin_configs_docker_application_logs_enabled: true
 ```
 This configuration creates a socket at /var/run/rsyslog/text.sock
 The logging configuration in the task definition of the application should be as follows:
@@ -261,10 +238,7 @@ The logging configuration in the task definition of the application should be as
 
 #### JSON logs
 ```YAML
-rsyslog:
-  builtin_configs:
-    docker_json_logs:
-      enabled: true
+sansible_rsyslog_builtin_configs_docker_json_logs_enabled: true
 ```
 This configuration creates a socket at /var/run/rsyslog/json.sock
 The logging configuration in the task definition of the application should be as follows:
@@ -289,24 +263,18 @@ To install:
 
   roles:
     - role: sansible.rsyslog
-      rsyslog:
-        app_name: default_app
-        builtin_configs:
-          # generic handler for text based, unformatted log files
-          application_logs:
-            enabled: true
-            logs:
-              - path: "/home/application_user/app_log.log"
-          json_logs:
-            enabled: true
-            logs:
-              - path: "/home/application_user/app_log_json.log"
-                options:
-                  type_tag: "application_log"
-          nginx_access_logs:
-            enabled: true
-            logs:
-              - path: "/var/log/nginx/application_access.log"
+      sansible_rsyslog_app_name: default_app
+      sansible_rsyslog_builtin_configs_application_logs_enabled: true
+      sansible_rsyslog_builtin_configs_application_logs_logs:
+        - path: "/home/application_user/app_log.log"
+      sansible_rsyslog_builtin_configs_json_logs_enabled: true
+      sansible_rsyslog_builtin_configs_json_logs_logs:
+        - path: "/home/application_user/app_log_json.log"
+          options:
+            type_tag: "application_log"
+      sansible_rsyslog_builtin_configs_nginx_access_logs_enabled: true
+      sansible_rsyslog_builtin_configs_nginx_access_logs_logs:
+        - path: "/var/log/nginx/application_access.log"
 ```
 
 To install without default config:
@@ -317,9 +285,8 @@ To install without default config:
 
   roles:
     - role: sansible.rsyslog
-      rsyslog:
-        app_name: default_app
-        default_config: no
+      sansible_rsyslog_app_name: default_app
+      sansible_rsyslog_default_config: no
 ```
 
 To install specific package versions:
@@ -330,8 +297,7 @@ To install specific package versions:
 
   roles:
     - role: sansible.rsyslog
-      rsyslog:
-        version: "8.30*"
-        version_libfastjson4: "0.99.*"
-        version_mmjsonparse: "8.30.*"
+      sansible_rsyslog_version: "8.30*"
+      sansible_rsyslog_version_libfastjson4: "0.99.*"
+      sansible_rsyslog_version_mmjsonparse: "8.30.*"
 ```
