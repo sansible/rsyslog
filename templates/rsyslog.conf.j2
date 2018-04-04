@@ -3,7 +3,7 @@
 #
 
 # This must come before any network modules
-$MaxMessageSize {{ rsyslog.max_message_size }}
+$MaxMessageSize {{ sansible_rsyslog_max_message_size }}
 
 #################
 #### MODULES ####
@@ -47,7 +47,7 @@ template(name="syslogTemplate"
    property(name="timestamp" dateFormat="rfc3339")
    constant(value="\", ")
    constant(value="\"@version\":\"2\", ")
-   constant(value="\"role\":\"{{ rsyslog.app_name }}\", ")
+   constant(value="\"role\":\"{{ sansible_rsyslog_app_name }}\", ")
    constant(value="\"message\":\"")
    property(name="msg" format="json")
    constant(value="\", ")
@@ -77,7 +77,7 @@ template(name="authlogTemplate"
    property(name="timestamp" dateFormat="rfc3339")
    constant(value="\", ")
    constant(value="\"@version\":\"2\", ")
-   constant(value="\"role\":\"{{ rsyslog.app_name }}\", ")
+   constant(value="\"role\":\"{{ sansible_rsyslog_app_name }}\", ")
    constant(value="\"message\":\"")
    property(name="msg" format="json")
    constant(value="\", ")
@@ -110,7 +110,7 @@ template(name="textLogTemplate"
    property(name="timestamp" dateFormat="rfc3339")
    constant(value="\", ")
    constant(value="\"@version\":\"1\", ")
-   constant(value="\"role\":\"{{ rsyslog.app_name }}\", ")
+   constant(value="\"role\":\"{{ sansible_rsyslog_app_name }}\", ")
    constant(value="\"sourcefile\":\"")
    property(name="$!metadata!filename")
    constant(value="\", ")
@@ -131,7 +131,7 @@ template(name="jsonLogTemplate"
    property(name="hostname")
    constant(value="\", ")
    constant(value="\"@version\":\"2\", ")
-   constant(value="\"role\":\"{{ rsyslog.app_name }}\", ")
+   constant(value="\"role\":\"{{ sansible_rsyslog_app_name }}\", ")
    constant(value="\"sourcefile\":\"")
    property(name="$!metadata!filename")
    constant(value="\", ")
@@ -150,8 +150,8 @@ ruleset(name="remoteTextLog") {
 	:msg, contains, "healthcheck" stop
 	action(
 		type="omfwd"
-		Target="{{ rsyslog.logstash.host }}"
-		Port="{{ rsyslog.logstash.port }}"
+		Target="{{ sansible_rsyslog_logstash_host }}"
+		Port="{{ sansible_rsyslog_logstash_port }}"
 		Protocol="tcp"
 		RebindInterval="100"
 		template="textLogTemplate"
@@ -166,8 +166,8 @@ ruleset(name="remoteJsonLog") {
 	action(type="mmjsonparse" cookie="")
 	action(
 		type="omfwd"
-		Target="{{ rsyslog.logstash.host }}"
-		Port="{{ rsyslog.logstash.port }}"
+		Target="{{ sansible_rsyslog_logstash_host }}"
+		Port="{{ sansible_rsyslog_logstash_port }}"
 		Protocol="tcp"
 		RebindInterval="100"
 		template="jsonLogTemplate"

@@ -17,4 +17,3 @@
   service:
     name: rsyslog
     state: stopped
-

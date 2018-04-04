@@ -5,8 +5,8 @@
 # Transport system and kernal (syslog) messages to logstash
 *.*;auth,authpriv.none action(
 	type="omfwd"
-	Target="{{ rsyslog.logstash.host }}"
-	Port="{{ rsyslog.logstash.port }}"
+	Target="{{ sansible_rsyslog_logstash_host }}"
+	Port="{{ sansible_rsyslog_logstash_port }}"
 	Protocol="tcp"
 	RebindInterval="100"
 	template="syslogTemplate"

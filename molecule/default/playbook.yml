@@ -1,0 +1,13 @@
+---
+
+- name: Converge
+  hosts: all
+
+  roles:
+    - role: rsyslog
+      sansible_rsyslog_builtin_configs_auth_logs_enabled: yes
+      ansible_rsyslog_builtin_configs_auth_logs_enabled: yes
+      sansible_rsyslog_builtin_configs_docker_application_logs_enabled: yes
+      sansible_rsyslog_builtin_configs_docker_json_logs_enabled: yes
+      sansible_rsyslog_builtin_configs_json_logs_enabled: yes
+      sansible_rsyslog_builtin_configs_nginx_access_logs_enabled: yes

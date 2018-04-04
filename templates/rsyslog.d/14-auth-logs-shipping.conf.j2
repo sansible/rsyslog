@@ -5,8 +5,8 @@
 # Transport auth messages to logstash
 auth,authpriv.* action(
 	type="omfwd"
-	Target="{{ rsyslog.logstash.host }}"
-	Port="{{ rsyslog.logstash.port }}"
+	Target="{{ sansible_rsyslog_logstash_host }}"
+	Port="{{ sansible_rsyslog_logstash_port }}"
 	Protocol="tcp"
 	RebindInterval="100"
 	template="authlogTemplate"

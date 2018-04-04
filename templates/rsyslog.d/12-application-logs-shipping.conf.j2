@@ -5,7 +5,7 @@
 # monitors unformatted application logs, they will get sent wholesale to
 # logstash with some extra bits of furniture (server role, host etc.)
 
-{% for log_settings in item.value.logs %}
+{% for log_settings in sansible_rsyslog_builtin_configs_application_logs_logs %}
 
 input(type="imfile"
 	File="{{ log_settings.path }}"
