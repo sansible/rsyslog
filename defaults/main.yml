@@ -40,6 +40,7 @@ sansible_rsyslog_config_files_to_purge:
   - 21-cloudinit.conf
 
 sansible_rsyslog_default_config: yes
+sansible_rsyslog_imfile_use_reopen_on_truncate: no
 sansible_rsyslog_logstash_host: logstash.elk.internal
 sansible_rsyslog_logstash_port: 5001
 sansible_rsyslog_max_message_size: 64k

@@ -1,3 +1,4 @@
+#jinja2: lstrip_blocks: True
 ##
 # {{ ansible_managed }}
 #
@@ -12,6 +13,9 @@ input(type="imfile"
 	Tag="{{ log_settings.options.type_tag if ( log_settings.options is defined and log_settings.options.type_tag is defined) else 'application-logs' }}"
 	addMetadata="on"
 	ruleset="remoteTextLog"
+{% if sansible_rsyslog_imfile_use_reopen_on_truncate %}
+	reopenOnTruncate="on"
+{% endif %}
 )
 
 {% endfor %}
