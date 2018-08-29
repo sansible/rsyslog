@@ -1,9 +1,22 @@
 ---
 
+- name: Download rsyslog PGP key (works with Bionic behind a proxy)
+  get_url:
+    dest: /usr/local/src/rsyslog.asc
+    mode: 0644
+    url: "https://{{ sansible_rsyslog_apt_keyserver }}/pks/lookup?op=get&search=0x{{ sansible_rsyslog_apt_key_id }}"
+
+- name: Ensures rsyslog PGP key is known
+  become: yes
+  apt_key:
+    file: /usr/local/src/rsyslog.asc
+    id: "{{ sansible_rsyslog_apt_key_id }}"
+    state: present
+
 - name: Add rsyslog v8 repo
   become: yes
   apt_repository:
-    repo: "ppa:adiscon/v8-stable"
+    repo: "{{ sansible_rsyslog_apt_repo }}"
     state: present
     update_cache: yes
 
