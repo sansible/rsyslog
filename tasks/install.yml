@@ -1,6 +1,7 @@
 ---
 
 - name: Download rsyslog PGP key (works with Bionic behind a proxy)
+  become: yes
   get_url:
     dest: /usr/local/src/rsyslog.asc
     mode: 0644
