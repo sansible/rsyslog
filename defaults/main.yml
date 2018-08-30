@@ -1,6 +1,9 @@
 ---
 
 sansible_rsyslog_app_name: default_app
+sansible_rsyslog_apt_key_id: 5234BF2B
+sansible_rsyslog_apt_keyserver: keyserver.ubuntu.com
+sansible_rsyslog_apt_repo: "deb http://ppa.launchpad.net/adiscon/v8-stable/ubuntu {{ ansible_distribution_release }} main"
 
 sansible_rsyslog_builtin_configs_application_logs_enabled: no
 sansible_rsyslog_builtin_configs_application_logs_template:
