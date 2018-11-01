@@ -84,7 +84,7 @@
   template:
     src: "{{ sansible_rsyslog_builtin_configs_docker_json_logs_template.src }}"
     dest: "{{ sansible_rsyslog_builtin_configs_docker_json_logs_template.dest }}"
-  when: sansible_rsyslog_builtin_configs_docker_application_logs_enabled
+  when: sansible_rsyslog_builtin_configs_docker_json_logs_enabled
   notify:
     - restart rsyslog
 
