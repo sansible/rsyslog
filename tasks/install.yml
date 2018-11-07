@@ -88,6 +88,15 @@
   notify:
     - restart rsyslog
 
+- name: Configure Built-In Docker Journald Logs
+  become: yes
+  template:
+    src: "{{ sansible_rsyslog_builtin_configs_docker_journald_logs_template.src }}"
+    dest: "{{ sansible_rsyslog_builtin_configs_docker_journald_logs_template.dest }}"
+  when: sansible_rsyslog_builtin_configs_docker_journald_logs_enabled
+  notify:
+    - restart rsyslog
+
 - name: Configure Built-In JSON Logs
   become: yes
   template:

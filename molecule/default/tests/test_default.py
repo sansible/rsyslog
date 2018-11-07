@@ -21,6 +21,7 @@ def test_files(host):
         '/etc/rsyslog.d/14-auth-logs-shipping.conf',
         '/etc/rsyslog.d/15-docker-text-logs-shipping.conf',
         '/etc/rsyslog.d/16-docker-json-logs.shipping.conf',
+        '/etc/rsyslog.d/17-docker-journald-logs.shipping.conf',
         '/etc/rsyslog.d/90-syslog-shipping.conf',
     ]
     for config in to_add:
