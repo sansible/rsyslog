@@ -26,6 +26,11 @@ sansible_rsyslog_builtin_configs_docker_json_logs_template:
   src: rsyslog.d/16-docker-json-logs.shipping.conf.j2
   dest: /etc/rsyslog.d/16-docker-json-logs.shipping.conf
 
+sansible_rsyslog_builtin_configs_docker_journald_logs_enabled: no
+sansible_rsyslog_builtin_configs_docker_journald_logs_template:
+  src: rsyslog.d/17-docker-journald-logs.shipping.conf.j2
+  dest: /etc/rsyslog.d/17-docker-journald-logs.shipping.conf
+
 sansible_rsyslog_builtin_configs_json_logs_enabled: no
 sansible_rsyslog_builtin_configs_json_logs_template:
   src: rsyslog.d/13-json-logs-shipping.conf.j2
@@ -42,6 +47,7 @@ sansible_rsyslog_config_files_to_purge:
   - 20-ufw.conf
   - 21-cloudinit.conf
 
+sansible_rsyslog_custom_ecs_properties: no
 sansible_rsyslog_default_config: yes
 sansible_rsyslog_imfile_use_reopen_on_truncate: no
 sansible_rsyslog_logstash_host: logstash.elk.internal
