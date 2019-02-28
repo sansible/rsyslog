@@ -26,3 +26,6 @@ indent_size = 2
 
 [Makefile]
 indent_style = tab
+
+[{templates/*.conf.j2,templates/rsyslog.d/*.conf.j2}]
+indent_style = tab

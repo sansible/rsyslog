@@ -3,9 +3,11 @@
 dependencies: []
 
 galaxy_info:
+  author: sansible
   description: "Install rsyslog."
   license: MIT
-  min_ansible_version: 2.4
+  min_ansible_version: 2.5
+  min_ansible_container_version: 2.5
   platforms:
     - name: Ubuntu
       versions:
@@ -13,4 +15,8 @@ galaxy_info:
         - xenial
         - bionic
   categories:
-    - development
+    - logging
+    - logs
+    - rsyslog
+    - rsyslogd
+    - system

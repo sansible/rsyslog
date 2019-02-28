@@ -13,9 +13,9 @@ input(type="imfile"
 	Tag="{{ log_settings.options.type_tag }}"
 	addMetadata="on"
 	ruleset="remoteJsonLog"
-{% if sansible_rsyslog_imfile_use_reopen_on_truncate %}
-	reopenOnTruncate="on"
-{% endif %}
+	{% for key, value in (sansible_rsyslog_defaults_imfile | combine(sansible_rsyslog_config_imfile)).iteritems() %}
+	{{ key }}="{{ value }}"
+	{% endfor %}
 )
 
 {% endfor %}

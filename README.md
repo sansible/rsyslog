@@ -28,7 +28,7 @@ To install run `ansible-galaxy install sansible.rsyslog` or add this to your
 
 ```YAML
 - name: sansible.rsyslog
-  version: v2.0
+  version: v3.0
 ```
 
 and run `ansible-galaxy install -p ./roles -r roles.yml`
@@ -302,6 +302,41 @@ To install:
       sansible_rsyslog_builtin_configs_nginx_access_logs_enabled: true
       sansible_rsyslog_builtin_configs_nginx_access_logs_logs:
         - path: "/var/log/nginx/application_access.log"
+```
+
+There are global default settings that are applied to the config files, 
+these can be seen in [vars/main.yml](vars/main.yml), to override or add 
+any additional settings you can use the sansible_rsyslog_config_global, 
+sansible_rsyslog_config_imfile, sansible_rsyslog_config_main_queue and 
+sansible_rsyslog_config_omfwd vars:
+
+```YAML
+- name: Some app
+  hosts: "{{ hosts }}"
+
+  roles:
+    - role: sansible.rsyslog
+      sansible_rsyslog_app_name: default_app
+      sansible_rsyslog_builtin_configs_application_logs_enabled: true
+      sansible_rsyslog_builtin_configs_application_logs_logs:
+        - path: "/home/application_user/app_log.log"
+      sansible_rsyslog_builtin_configs_json_logs_enabled: true
+      sansible_rsyslog_builtin_configs_json_logs_logs:
+        - path: "/home/application_user/app_log_json.log"
+          options:
+            type_tag: "application_log"
+      sansible_rsyslog_builtin_configs_nginx_access_logs_enabled: true
+      sansible_rsyslog_builtin_configs_nginx_access_logs_logs:
+        - path: "/var/log/nginx/application_access.log"
+      sansible_rsyslog_config_global:
+        maxMessageSize: 32K
+        oversizemsg.input.mode: accept
+      sansible_rsyslog_config_imfile:
+        reopenOnTruncate: "on"
+      sansible_rsyslog_config_main_queue:
+        queue.size: 100000
+      sansible_rsyslog_config_omfwd:
+        action.resumeRetryCount: 10
 ```
 
 To install without default config:
