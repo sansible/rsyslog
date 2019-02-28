@@ -8,6 +8,8 @@ platforms:
     image: ubuntu:trusty
   - name: sansible_rsyslog-xenial
     image: ubuntu:xenial
+  - name: sansible_rsyslog-bionic
+    image: ubuntu:bionic
 
 provisioner:
   name: ansible

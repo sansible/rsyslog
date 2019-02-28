@@ -1,3 +1,4 @@
+#jinja2: lstrip_blocks: True
 ##
 # {{ ansible_managed }}
 #
@@ -7,65 +8,82 @@
 
 module(load="imjournal" StateFile="imjournal.state")
 
-template(
-  name="jsonJournaldLogTemplate"
-  type="list"
-  option.casesensitive="on") {
-    constant(value="{")
-      constant(value="\"@timestamp\":\"")               property(name="timereported" dateFormat="rfc3339" date.inUTC="on")
-      constant(value="\",\"hostname\":\"")              property(name="hostname")
-      constant(value="\",\"container_id\":\"")          property(name="$!CONTAINER_ID")
-      constant(value="\",\"container_name\":\"")        property(name="$!CONTAINER_NAME")
-      constant(value="\",\"container_tag\":\"")         property(name="$!CONTAINER_TAG")
+template(name="jsonJournaldLogTemplate" type="list" option.casesensitive="on") {
+	constant(value="{")
+	constant(value="\"@timestamp\":\"")
+	property(name="timereported" dateFormat="rfc3339" date.inUTC="on")
+	constant(value="\",\"hostname\":\"")
+	property(name="hostname")
+	constant(value="\",\"container_id\":\"")
+	property(name="$!CONTAINER_ID")
+	constant(value="\",\"container_name\":\"")
+	property(name="$!CONTAINER_NAME")
+	constant(value="\",\"container_tag\":\"")
+	property(name="$!CONTAINER_TAG")
 {% if sansible_rsyslog_custom_ecs_properties %}
-      constant(value="\",\"role\":\"")                  property(name="$!ROLE")
-      constant(value="\",\"ecs_task_container\":\"")    property(name="$!ECS_TASK_CONTAINER")
-      constant(value="\",\"app_version\":\"")           property(name="$!APP_VERSION")
+	constant(value="\",\"role\":\"")
+	property(name="$!ROLE")
+	constant(value="\",\"ecs_task_container\":\"")
+	property(name="$!ECS_TASK_CONTAINER")
+	constant(value="\",\"app_version\":\"")
+	property(name="$!APP_VERSION")
 {% endif %}
-      constant(value="\",")                             property(name="$!json" position.from="2")
-    constant(value="\n")
+	constant(value="\",")
+	property(name="$!json" position.from="2")
+	constant(value="\n")
 }
 
-template(
-  name="stringJournaldLogTemplate"
-  type="list"
-  option.casesensitive="on") {
-    constant(value="{")
-      constant(value="\"@timestamp\":\"")               property(name="timereported" dateFormat="rfc3339" date.inUTC="on")
-      constant(value="\",\"hostname\":\"")              property(name="hostname")
-      constant(value="\",\"container_id\":\"")          property(name="$!CONTAINER_ID")
-      constant(value="\",\"container_name\":\"")        property(name="$!CONTAINER_NAME")
-      constant(value="\",\"container_tag\":\"")         property(name="$!CONTAINER_TAG")
+
+template(name="stringJournaldLogTemplate" type="list" option.casesensitive="on") {
+	constant(value="{")
+	constant(value="\"@timestamp\":\"")
+	property(name="timereported" dateFormat="rfc3339" date.inUTC="on")
+	constant(value="\",\"hostname\":\"")
+	property(name="hostname")
+	constant(value="\",\"container_id\":\"")
+	property(name="$!CONTAINER_ID")
+	constant(value="\",\"container_name\":\"")
+	property(name="$!CONTAINER_NAME")
+	constant(value="\",\"container_tag\":\"")
+	property(name="$!CONTAINER_TAG")
 {% if sansible_rsyslog_custom_ecs_properties %}
-      constant(value="\",\"role\":\"")                  property(name="$!ROLE")
-      constant(value="\",\"ecs_task_container\":\"")    property(name="$!ECS_TASK_CONTAINER")
-      constant(value="\",\"app_version\":\"")           property(name="$!APP_VERSION")
+	constant(value="\",\"role\":\"")
+	property(name="$!ROLE")
+	constant(value="\",\"ecs_task_container\":\"")
+	property(name="$!ECS_TASK_CONTAINER")
+	constant(value="\",\"app_version\":\"")
+	property(name="$!APP_VERSION")
 {% endif %}
-      constant(value="\",\"message\":\"")               property(name="rawmsg")
-    constant(value="\"}\n")
+	constant(value="\",\"message\":\"")
+	property(name="rawmsg")
+	constant(value="\"}\n")
 }
 
 if ($!CONTAINER_NAME != "") then {
-  action(type="mmjsonparse" cookie="" container="!json")
-  if ($parsesuccess == "OK") then {
-    action(
-      type="omfwd"
-      Target="{{ sansible_rsyslog_logstash_host }}"
-      Port="{{ sansible_rsyslog_logstash_port }}"
-      Protocol="tcp"
-      RebindInterval="100"
-      template="jsonJournaldLogTemplate"
-    )
-  }
-  else {
-    action(
-      type="omfwd"
-      Target="{{ sansible_rsyslog_logstash_host }}"
-      Port="{{ sansible_rsyslog_logstash_port }}"
-      Protocol="tcp"
-      RebindInterval="100"
-      template="stringJournaldLogTemplate"
-    )
-  }
-  stop
+	action(type="mmjsonparse" cookie="" container="!json")
+	if ($parsesuccess == "OK") then {
+		action(
+			{% for key, value in (sansible_rsyslog_defaults_omfwd | combine(sansible_rsyslog_config_omfwd)).iteritems() %}
+			{{ key }}="{{ value }}"
+			{% endfor %}
+			type="omfwd"
+			Target="{{ sansible_rsyslog_logstash_host }}"
+			Port="{{ sansible_rsyslog_logstash_port }}"
+			Protocol="tcp"
+			template="jsonJournaldLogTemplate"
+		)
+	}
+	else {
+		action(
+			{% for key, value in (sansible_rsyslog_defaults_omfwd | combine(sansible_rsyslog_config_omfwd)).iteritems() %}
+			{{ key }}="{{ value }}"
+			{% endfor %}
+			type="omfwd"
+			Target="{{ sansible_rsyslog_logstash_host }}"
+			Port="{{ sansible_rsyslog_logstash_port }}"
+			Protocol="tcp"
+			template="stringJournaldLogTemplate"
+		)
+	}
+	stop
 }

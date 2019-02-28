@@ -1,9 +1,14 @@
+#jinja2: lstrip_blocks: True
 ##
 # {{ ansible_managed }}
 #
 
 # This must come before any network modules
-$MaxMessageSize {{ sansible_rsyslog_max_message_size }}
+global(
+	{% for key, value in (sansible_rsyslog_defaults_global | combine(sansible_rsyslog_config_global)).iteritems() %}
+	{{ key }}="{{ value }}"
+	{% endfor %}
+)
 
 #################
 #### MODULES ####
@@ -18,18 +23,14 @@ module(load="mmjsonparse")
 #### GLOBAL DIRECTIVES ####
 ###########################
 
-$RepeatedMsgReduction off
-
-$WorkDirectory /var/spool/rsyslog
-
 #
 # Queue settings
 #
-$ActionQueueFileName mainqueue # unique name prefix for spool files
-$ActionQueueMaxDiskSpace 500M  # 1gb space limit (use as much as possible)
-$ActionQueueSaveOnShutdown on  # save messages to disk on shutdown
-$ActionQueueType LinkedList # run asynchronously
-$ActionResumeRetryCount -1  # infinite retries if host is down
+main_queue(
+	{% for key, value in (sansible_rsyslog_defaults_main_queue | combine(sansible_rsyslog_config_main_queue)).iteritems() %}
+	{{ key }}="{{ value }}"
+	{% endfor %}
+)
 
 #
 # Templates
@@ -149,11 +150,13 @@ ruleset(name="remoteTextLog") {
 	:msg, contains, "ELB-HealthChecker" stop
 	:msg, contains, "healthcheck" stop
 	action(
+		{% for key, value in (sansible_rsyslog_defaults_omfwd | combine(sansible_rsyslog_config_omfwd)).iteritems() %}
+		{{ key }}="{{ value }}"
+		{% endfor %}
 		type="omfwd"
 		Target="{{ sansible_rsyslog_logstash_host }}"
 		Port="{{ sansible_rsyslog_logstash_port }}"
 		Protocol="tcp"
-		RebindInterval="100"
 		template="textLogTemplate"
 	)
 	stop
@@ -165,11 +168,13 @@ ruleset(name="remoteJsonLog") {
 	:msg, contains, "healthcheck" stop
 	action(type="mmjsonparse" cookie="")
 	action(
+		{% for key, value in (sansible_rsyslog_defaults_omfwd | combine(sansible_rsyslog_config_omfwd)).iteritems() %}
+		{{ key }}="{{ value }}"
+		{% endfor %}
 		type="omfwd"
 		Target="{{ sansible_rsyslog_logstash_host }}"
 		Port="{{ sansible_rsyslog_logstash_port }}"
 		Protocol="tcp"
-		RebindInterval="100"
 		template="jsonLogTemplate"
 	)
 	stop

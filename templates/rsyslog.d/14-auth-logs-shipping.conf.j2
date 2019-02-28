@@ -1,13 +1,16 @@
+#jinja2: lstrip_blocks: True
 ##
 # {{ ansible_managed }}
 #
 
 # Transport auth messages to logstash
 auth,authpriv.* action(
+	{% for key, value in (sansible_rsyslog_defaults_omfwd | combine(sansible_rsyslog_config_omfwd)).iteritems() %}
+	{{ key }}="{{ value }}"
+	{% endfor %}
 	type="omfwd"
 	Target="{{ sansible_rsyslog_logstash_host }}"
 	Port="{{ sansible_rsyslog_logstash_port }}"
 	Protocol="tcp"
-	RebindInterval="100"
 	template="authlogTemplate"
 )

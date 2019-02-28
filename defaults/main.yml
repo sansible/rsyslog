@@ -5,6 +5,11 @@ sansible_rsyslog_apt_key_id: 5234BF2B
 sansible_rsyslog_apt_keyserver: keyserver.ubuntu.com
 sansible_rsyslog_apt_repo: "deb http://ppa.launchpad.net/adiscon/v8-stable/ubuntu {{ ansible_distribution_release }} main"
 
+sansible_rsyslog_config_global: {}
+sansible_rsyslog_config_imfile: {}
+sansible_rsyslog_config_main_queue: {}
+sansible_rsyslog_config_omfwd: {}
+
 sansible_rsyslog_builtin_configs_application_logs_enabled: no
 sansible_rsyslog_builtin_configs_application_logs_template:
   src: rsyslog.d/12-application-logs-shipping.conf.j2
@@ -49,10 +54,8 @@ sansible_rsyslog_config_files_to_purge:
 
 sansible_rsyslog_custom_ecs_properties: no
 sansible_rsyslog_default_config: yes
-sansible_rsyslog_imfile_use_reopen_on_truncate: no
 sansible_rsyslog_logstash_host: logstash.elk.internal
 sansible_rsyslog_logstash_port: 5001
-sansible_rsyslog_max_message_size: 64k
 sansible_rsyslog_version: "8.*"
 sansible_rsyslog_version_libfastjson4: "0.*"
 sansible_rsyslog_version_mmjsonparse: "8.*"

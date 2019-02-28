@@ -1,0 +1,18 @@
+---
+
+sansible_rsyslog_defaults_global:
+  maxMessageSize: 64k
+  workDirectory: /var/spool/rsyslog
+
+sansible_rsyslog_defaults_imfile:
+  reopenOnTruncate: "off"
+
+sansible_rsyslog_defaults_main_queue:
+  queue.filename: mainqueue
+  queue.maxdiskspace: 500M
+  queue.saveonshutdown: "on"
+  queue.type: LinkedList
+  queue.size: 100000
+
+sansible_rsyslog_defaults_omfwd:
+  RebindInterval: 100

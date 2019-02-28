@@ -33,11 +33,10 @@
 - name: Install rsyslog and supporting packages
   become: yes
   apt:
-    name: "{{ item }}"
-  with_items:
-    - "libfastjson4={{ sansible_rsyslog_version_libfastjson4 }}"
-    - "rsyslog={{ sansible_rsyslog_version }}"
-    - "rsyslog-mmjsonparse={{ sansible_rsyslog_version_mmjsonparse }}"
+    name:
+      - "libfastjson4={{ sansible_rsyslog_version_libfastjson4 }}"
+      - "rsyslog={{ sansible_rsyslog_version }}"
+      - "rsyslog-mmjsonparse={{ sansible_rsyslog_version_mmjsonparse }}"
 
 - name: Configure default rsyslog shipping configs
   become: yes
