@@ -2,7 +2,7 @@
 
 sansible_rsyslog_app_name: default_app
 sansible_rsyslog_apt_key_id: 5234BF2B
-sansible_rsyslog_apt_keyserver: keyserver.ubuntu.com
+sansible_rsyslog_apt_keyserver: http://eu.pool.sks-keyservers.net
 sansible_rsyslog_apt_repo: "deb http://ppa.launchpad.net/adiscon/v8-stable/ubuntu {{ ansible_distribution_release }} main"
 
 sansible_rsyslog_config_global: {}

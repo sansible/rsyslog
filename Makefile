@@ -1,24 +1,27 @@
-ANSIBLE_INSTALL_VERSION ?= 2.7.7
+ANSIBLE_INSTALL_VERSION ?= 2.7.10
 PATH := $(PWD)/.venv_ansible$(ANSIBLE_INSTALL_VERSION)/bin:$(shell printenv PATH)
 SHELL := env PATH=$(PATH) /bin/bash
+
+ifeq ($(SCENARIO), all)
+SCENARIO_OPT = "--all"
+else
+SCENARIO_OPT = "--scenario-name=$(SCENARIO)"
+endif
 
 .DEFAULT_GOAL := help
 .PHONY: all clean destroy help test
 
 
-_check_venv:
-	@if [ ! -e .venv_ansible$(ANSIBLE_INSTALL_VERSION)/bin/activate ]; then \
-	 	echo -e "\033[0;31mERROR: No virtualenv found - run 'make deps' first\033[0m"; \
-		false; \
-	fi
-
 
 ## Make deps, test
 all: deps test
 
+## Setup dependencies
+deps: .venv_ansible$(ANSIBLE_INSTALL_VERSION)
+
 
 ## Activate the virtualenv
-activate: _check_venv
+activate: .venv_ansible$(ANSIBLE_INSTALL_VERSION)
 	@echo -e "\033[0;32mINFO: Activating venv_ansible$(ANSIBLE_INSTALL_VERSION) (ctrl-d to exit)\033[0m"
 	@exec $(SHELL) --init-file .venv_ansible$(ANSIBLE_INSTALL_VERSION)/bin/activate
 
@@ -42,18 +45,24 @@ destroy:
 		echo -e "\033[0;33mWARNING: molecule not found - either remove potential containers manually or run 'make deps' first\033[0m"; \
 	fi
 
+
 ## Login to docker container named '%'
-login_%: _check_venv
+login_%: .venv_ansible$(ANSIBLE_INSTALL_VERSION)
 	@echo -e "\033[0;32mINFO: Logging into $(subst login_,,$@) (ctrl-d to exit)\033[0m"
 	@.venv_ansible$(ANSIBLE_INSTALL_VERSION)/bin/molecule login --host $(subst login_,,$@)
 
+
 ## Run 'molecule test --destroy=never' (run 'make destroy' to destroy containers)
-test: _check_venv
-	@.venv_ansible$(ANSIBLE_INSTALL_VERSION)/bin/molecule test --destroy=never
+test: .venv_ansible$(ANSIBLE_INSTALL_VERSION)
+	@.venv_ansible$(ANSIBLE_INSTALL_VERSION)/bin/molecule test $(SCENARIO_OPT) --destroy=never
+
+
+# shortcut for creating venv
+.venv: .venv_ansible$(ANSIBLE_INSTALL_VERSION)
 
 
 ## Create virtualenv, install dependencies
-deps:
+.venv_ansible$(ANSIBLE_INSTALL_VERSION):
 	@if (python -V 2>&1 | grep -qv "Python 2.7"); then \
 		echo -e "\033[0;31mERROR: Only Python 2.7 is supported at this stage\033[0m"; \
 		false; \
@@ -66,13 +75,14 @@ deps:
 
 
 ## Run 'make test' on any file change
-watch: _check_venv
+watch: .venv_ansible$(ANSIBLE_INSTALL_VERSION)
 	@while sleep 1; do \
 		find defaults/ files/ handlers/ meta/ molecule/*/*.yml molecule/*/test/*.py tasks/ templates/ vars/ 2> /dev/null \
 		| entr -d make test; \
 	done
 
 
+## Print this help
 help:
 	@awk -v skip=1 \
 		'/^##/ { sub(/^[#[:blank:]]*/, "", $$0); doc_h=$$0; doc=""; skip=0; next } \

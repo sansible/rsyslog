@@ -7,6 +7,7 @@ sudo: required
 language: python
 python:
   - 2.7
+cache: pip
 
 branches:
   only:
@@ -14,9 +15,9 @@ branches:
     - master
 
 env:
-  - ANSIBLE_INSTALL_VERSION=2.5.14
-  - ANSIBLE_INSTALL_VERSION=2.6.13
-  - ANSIBLE_INSTALL_VERSION=2.7.7
+  - ANSIBLE_INSTALL_VERSION=2.5.15
+  - ANSIBLE_INSTALL_VERSION=2.6.16
+  - ANSIBLE_INSTALL_VERSION=2.7.10
 
 services:
   - docker

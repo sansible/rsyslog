@@ -5,7 +5,11 @@
   get_url:
     dest: /usr/local/src/rsyslog.asc
     mode: 0644
-    url: "https://{{ sansible_rsyslog_apt_keyserver }}/pks/lookup?op=get&search=0x{{ sansible_rsyslog_apt_key_id }}"
+    url: "{{ sansible_rsyslog_apt_keyserver }}/pks/lookup?op=get&search=0x{{ sansible_rsyslog_apt_key_id }}"
+  retries: 2
+  delay: 10
+  register: sansible_rsyslog_pgp_result
+  until: sansible_rsyslog_pgp_result is succeeded
 
 - name: Ensures rsyslog PGP key is known
   become: yes
