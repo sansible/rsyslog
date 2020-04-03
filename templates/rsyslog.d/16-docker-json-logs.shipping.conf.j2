@@ -37,7 +37,7 @@ ruleset(name="remoteDockerJsonLog") {
 	:msg, contains, "healthcheck" stop
 	action(type="mmjsonparse" cookie="")
 	action(
-		{% for key, value in (sansible_rsyslog_defaults_omfwd | combine(sansible_rsyslog_config_omfwd)).iteritems() %}
+		{% for key, value in (sansible_rsyslog_defaults_omfwd | combine(sansible_rsyslog_config_omfwd)).items() %}
 		{{ key }}="{{ value }}"
 		{% endfor %}
 		type="omfwd"

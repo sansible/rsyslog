@@ -13,7 +13,7 @@ input(type="imfile"
 	Tag="{{ log_settings.options.type_tag }}"
 	addMetadata="on"
 	ruleset="remoteJsonLog"
-	{% for key, value in (sansible_rsyslog_defaults_imfile | combine(sansible_rsyslog_config_imfile)).iteritems() %}
+	{% for key, value in (sansible_rsyslog_defaults_imfile | combine(sansible_rsyslog_config_imfile)).items() %}
 	{{ key }}="{{ value }}"
 	{% endfor %}
 )

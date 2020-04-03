@@ -14,7 +14,7 @@ galaxy_info:
         - trusty
         - xenial
         - bionic
-  categories:
+  galaxy_tags:
     - logging
     - logs
     - rsyslog

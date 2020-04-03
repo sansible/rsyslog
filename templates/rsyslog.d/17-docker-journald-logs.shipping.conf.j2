@@ -63,7 +63,7 @@ if ($!CONTAINER_NAME != "") then {
 	action(type="mmjsonparse" cookie="" container="!json")
 	if ($parsesuccess == "OK") then {
 		action(
-			{% for key, value in (sansible_rsyslog_defaults_omfwd | combine(sansible_rsyslog_config_omfwd)).iteritems() %}
+			{% for key, value in (sansible_rsyslog_defaults_omfwd | combine(sansible_rsyslog_config_omfwd)).items() %}
 			{{ key }}="{{ value }}"
 			{% endfor %}
 			type="omfwd"
@@ -75,7 +75,7 @@ if ($!CONTAINER_NAME != "") then {
 	}
 	else {
 		action(
-			{% for key, value in (sansible_rsyslog_defaults_omfwd | combine(sansible_rsyslog_config_omfwd)).iteritems() %}
+			{% for key, value in (sansible_rsyslog_defaults_omfwd | combine(sansible_rsyslog_config_omfwd)).items() %}
 			{{ key }}="{{ value }}"
 			{% endfor %}
 			type="omfwd"
