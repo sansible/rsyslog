@@ -7,7 +7,7 @@
   tasks:
     - name: Install Python for Ansible
       become: yes
-      raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal python-zipstream)
+      raw: test -e /usr/bin/python3 || (apt -y update && apt install -y python3-minimal python3-zipstream)
       changed_when: no
 
     - name: Install apt-transport-https, lsb-release, net-tools

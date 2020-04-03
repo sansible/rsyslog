@@ -5,7 +5,7 @@
 
 # This must come before any network modules
 global(
-	{% for key, value in (sansible_rsyslog_defaults_global | combine(sansible_rsyslog_config_global)).iteritems() %}
+	{% for key, value in (sansible_rsyslog_defaults_global | combine(sansible_rsyslog_config_global)).items() %}
 	{{ key }}="{{ value }}"
 	{% endfor %}
 )
@@ -27,7 +27,7 @@ module(load="mmjsonparse")
 # Queue settings
 #
 main_queue(
-	{% for key, value in (sansible_rsyslog_defaults_main_queue | combine(sansible_rsyslog_config_main_queue)).iteritems() %}
+	{% for key, value in (sansible_rsyslog_defaults_main_queue | combine(sansible_rsyslog_config_main_queue)).items() %}
 	{{ key }}="{{ value }}"
 	{% endfor %}
 )
@@ -150,7 +150,7 @@ ruleset(name="remoteTextLog") {
 	:msg, contains, "ELB-HealthChecker" stop
 	:msg, contains, "healthcheck" stop
 	action(
-		{% for key, value in (sansible_rsyslog_defaults_omfwd | combine(sansible_rsyslog_config_omfwd)).iteritems() %}
+		{% for key, value in (sansible_rsyslog_defaults_omfwd | combine(sansible_rsyslog_config_omfwd)).items() %}
 		{{ key }}="{{ value }}"
 		{% endfor %}
 		type="omfwd"
@@ -168,7 +168,7 @@ ruleset(name="remoteJsonLog") {
 	:msg, contains, "healthcheck" stop
 	action(type="mmjsonparse" cookie="")
 	action(
-		{% for key, value in (sansible_rsyslog_defaults_omfwd | combine(sansible_rsyslog_config_omfwd)).iteritems() %}
+		{% for key, value in (sansible_rsyslog_defaults_omfwd | combine(sansible_rsyslog_config_omfwd)).items() %}
 		{{ key }}="{{ value }}"
 		{% endfor %}
 		type="omfwd"

@@ -1,4 +1,4 @@
-ANSIBLE_INSTALL_VERSION ?= 2.7.10
+ANSIBLE_INSTALL_VERSION ?= 2.9.6
 PATH := $(PWD)/.venv_ansible$(ANSIBLE_INSTALL_VERSION)/bin:$(shell printenv PATH)
 SHELL := env PATH=$(PATH) /bin/bash
 
@@ -63,14 +63,9 @@ test: .venv_ansible$(ANSIBLE_INSTALL_VERSION)
 
 ## Create virtualenv, install dependencies
 .venv_ansible$(ANSIBLE_INSTALL_VERSION):
-	@if (python -V 2>&1 | grep -qv "Python 2.7"); then \
-		echo -e "\033[0;31mERROR: Only Python 2.7 is supported at this stage\033[0m"; \
-		false; \
-	fi
 	virtualenv .venv_ansible$(ANSIBLE_INSTALL_VERSION)
 	.venv_ansible$(ANSIBLE_INSTALL_VERSION)/bin/pip install -r requirements.txt --ignore-installed
 	.venv_ansible$(ANSIBLE_INSTALL_VERSION)/bin/pip install ansible==$(ANSIBLE_INSTALL_VERSION)
-	virtualenv --relocatable .venv_ansible$(ANSIBLE_INSTALL_VERSION)
 	@echo -e "\033[0;32mINFO: Run 'make activate' to activate the virtualenv for this shell\033[0m"
 
 
